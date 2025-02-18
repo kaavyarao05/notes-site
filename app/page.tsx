@@ -13,7 +13,7 @@ export default function Home() {
         title={"Test Title"}
         preview={"Preview"}
         className={"bg-[#9fffdf]"}/>
-        
+
         <Card
         title={"Test Title"}
         preview={"Preview"}
