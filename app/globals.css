@@ -14,6 +14,14 @@
   }
 }
 
+.cardDiv{
+  background-color: aquamarine;
+}
+
+.cardDiv > h2{
+  background-color: blue;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
