@@ -14,16 +14,22 @@
   }
 }
 
+/*add font if needed*/
 .cardDiv{
-  background-color: aquamarine;
+  border: solid black 3px;
+  color: #0a0a0a;
+  padding: 20px;
+  height: 200px;
+  width: 200px;
+  margin: 5px;
+  border-radius: 10px;
+  border-right: 5px solid black;
 }
 
 .cardDiv > h2{
-  background-color: blue;
+  font-weight: bolder;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
