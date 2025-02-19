@@ -25,6 +25,10 @@ var notesDat=[ //fetch instead
       id:getId()
     }
 ]
+export function setNotes(note){
+    notesDat=[...notesDat,note];
+    return notesDat
+}
 
 export function getNotes(){
     return notesDat;

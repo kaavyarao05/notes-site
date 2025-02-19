@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 import Card from '@/app/1components/Card';
-import {getNotes,getId} from "@/app/data.js"
+import {getNotes,getId,setNotes} from "@/app/data.js"
 
 const colors=[
   "#ffcdd6",
@@ -15,7 +15,7 @@ function getRandomColour(){
 
 export default function Home() {
   const noteDat= getNotes();
-  const [notes,setNotes]=useState(noteDat);
+  const [notes,setNoteComponent]=useState(noteDat);
 
   const noteComponents=notes.map((note)=>
     <Card
@@ -28,14 +28,14 @@ export default function Home() {
   )
   console.log(notes);
   const handleAddNote=()=>{
-    setNotes([...notes,
+    setNoteComponent(setNotes(
       {
         title:"new",
         preview:"Click to Edit",
         color:getRandomColour(),
         id:getId()
       }
-    ]);
+    ));
     console.log(notes);
   }
   
