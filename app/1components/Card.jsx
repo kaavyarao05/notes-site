@@ -1,9 +1,9 @@
 import React from 'react'
 
-const Card = ({title,preview,className}) => {
+const Card = ({title,preview,color,id}) => {
   return (
-    <a>
-       <div className={'cardDiv '+className}>
+    <a href={"./notes/"+id}>
+       <div className={'cardDiv bg-['+color+"]"}>
             <h2>{title}</h2>
             <p>{preview}</p>
         </div> 
