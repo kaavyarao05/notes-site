@@ -18,6 +18,10 @@
 
 /*add font if needed*/
 .cardDiv{
+  /*
+  -webkit-clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 25%, 75% 0);
+  clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 25%, 75% 0);
+  */
   border: solid black 3px;
   color: #0a0a0a;
   padding: 20px;
