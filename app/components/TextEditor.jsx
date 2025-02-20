@@ -11,6 +11,7 @@ import Color from "@tiptap/extension-color";
 import Strike from "@tiptap/extension-strike";
 import Highlight from "@tiptap/extension-highlight";
 
+
 //useEditor to create an instance of the editor
 //EditorContent: wrapper
 //StarterKit basic text editing utilities
@@ -47,7 +48,7 @@ export default function TextEditor() {
 
         <input
           type="color"
-          onChange={(e) => 
+          onChange={(e) =>
             editor.chain().focus().setColor(e.target.value).run()
           }
           className="px-2 py-1 border rounded"
@@ -56,10 +57,11 @@ export default function TextEditor() {
         <input
           type="color"
           onChange={(e) =>
-            editor.chain().focus().setHighlight({color:e.target.value}).run()
+            editor.chain().focus().toggleHighlight({ color: e.target.value }).run()
           }
           className="px-2 py-1 border rounded"
         />
+
         
 
       </div>
