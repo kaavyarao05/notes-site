@@ -26,7 +26,6 @@ export default function Home() {
       id={note.id}
       />
   )
-  console.log(notes);
   const handleAddNote=()=>{
     setNoteComponent(setNotes(
       {
@@ -36,7 +35,6 @@ export default function Home() {
         id:getId()
       }
     ));
-    console.log(notes);
   }
   
   const handleSignOut=()=>{

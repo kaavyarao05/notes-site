@@ -22,15 +22,29 @@
   -webkit-clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 25%, 75% 0);
   clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 25%, 75% 0);
   */
+  --shadowOffset:2px;
+  --margin: 5px;
+  --borderRad:10px;
+  --height:200px;
+  --width: 200px;
+
+
   border: solid black 3px;
   color: #0a0a0a;
   padding: 20px;
-  height: 200px;
-  width: 200px;
-  margin: 5px;
-  border-radius: 10px 12px 15px 15px ;
-  border-right: 5px solid black;
-  border-bottom: 7px solid black;
+  height: var(--height);
+  width: var(--width);
+  margin: var(--margin);
+  border-radius: var(--borderRad);
+  box-shadow: black var(--shadowOffset) var(--shadowOffset);
+  transition-duration: 100ms;
+}
+.cardDiv:hover{
+  --shadowOffset:5px;
+  --margin:11px;
+  --borderRad:5px;
+  --height:190px;
+  --width:190px;
 }
 
 .cardDiv > h2{
