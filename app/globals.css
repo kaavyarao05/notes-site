@@ -11,13 +11,10 @@
 }
 
 .ProseMirror {
-  font-family: 'Poppins', 'Montserrat', 'Raleway', Arial, sans-serif !important;
+  font-family: inherit !important;
   color: inherit !important;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap');
 
 /*
 @media (prefers-color-scheme: dark) {

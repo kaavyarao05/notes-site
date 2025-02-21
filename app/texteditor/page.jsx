@@ -115,6 +115,20 @@ export default function TextEditor() {
           className="px-2 py-1 border rounded w-20"
         />
         */}
+
+        <label for="fontSize">Font Size:</label>
+        <select id="fontSize">
+          <option value="12px">12px</option>
+          <option value="14px">14px</option>
+          <option value="16px" selected>16px</option>
+          <option value="18px">18px</option>
+          <option value="20px">20px</option>
+          <option value="24px">24px</option>
+          <option value="28px">28px</option>
+          <option value="32px">32px</option>
+        </select>
+
+
         <input
           type="color"
           onChange={(e) =>
@@ -136,6 +150,9 @@ export default function TextEditor() {
       </div>
       <EditorContent editor={editor} />
     </div>
+
+    
+
     </main>
 
     
