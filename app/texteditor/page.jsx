@@ -9,6 +9,7 @@ import Strike from "@tiptap/extension-strike";
 import Highlight from "@tiptap/extension-highlight";
 import FontFamily from "@tiptap/extension-font-family";
 import { ReactSketchCanvas } from "react-sketch-canvas";
+import Link from "@tiptap/extension-link";
 
 export default function TextEditor() {
   const [brushColor, setBrushColor] = useState("black"); // Brush color for drawing
@@ -23,6 +24,10 @@ export default function TextEditor() {
       Strike,
       Highlight.configure({ multicolor: true }),
       FontFamily.configure({ types: ["textStyle"] }),
+      Link.configure({
+        openOnClick: true,
+        autolink: true,
+      })
     ],
     content: "<p>Enter text....</p>",
   });
@@ -82,6 +87,23 @@ export default function TextEditor() {
               }
               className="px-2 py-1 border rounded"
             />
+
+            <button
+              onClick={() => {
+                const linkText = prompt("Enter the text to display:");
+                const url = prompt("Enter the link URL:");
+
+                if (linkText && url) {
+                  editor.chain().focus().extendMarkRange("link").setLink({ href: url }).insertContent(linkText).run();
+                }
+              }}
+              className="px-2 py-1 border rounded"
+            >
+              🔗 Add Link
+            </button>
+
+
+
           </div>
 
           <EditorContent editor={editor} />
