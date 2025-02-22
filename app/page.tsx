@@ -8,9 +8,9 @@ const colors=[
   "#a7e9ff"
 ]
 
-let id=1;
 function getId(){
-    return(id++);
+  const ran=Math.floor( Math.random()*999 ) + 100;
+    return(ran);
 }
 
 var notesDat=[ //fetch instead
