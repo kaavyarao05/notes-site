@@ -8,7 +8,7 @@ const colors=[
   "#a7e9ff"
 ]
 
-var id=1;
+let id=1;
 function getId(){
     return(id++);
 }
