@@ -412,6 +412,13 @@ export default function TextEditor() {
               Undo
             </button>
 
+            <button
+              onClick={() => canvasRef.current.redo()}
+              className="px-3 py-1 bg-gray-500 text-white rounded-md"
+            >
+              Redo
+            </button>
+
             <input
               type="color"
               value={brushColor}
