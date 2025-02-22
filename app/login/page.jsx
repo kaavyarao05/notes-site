@@ -4,21 +4,41 @@ import { useState } from "react";
 import { supabase } from "../lib/supabase"
 import { useRouter } from "next/router";
 
-export default function LoginPage() {
+export default function LoginPage({username,password}) {
 
   const [data, setData]=useState({
     email:"",
     password:""
   });
+  function getUserDetails(){
+    const email=document.getElementById("email").value;
+    const password=document.getElementById("password").value;
+    return({email,password})
+  }
   const login=async(e)=>{
+    
     e.preventDefault();
     try{
       let {data:dataUser,error}=await supabase
     .auth
-    .signInWithPassword({
-      email:"kaavyarao05@gmail.com",
-      password:"password123"
-    });
+    .signInWithPassword(getUserDetails());
+    if(dataUser){
+      console.log(data);
+      const router=useRouter();
+      router.refresh();
+    }
+    } 
+    catch(e){
+      console.log(e);
+    } 
+  }
+  const signUp=async(e)=>{
+    
+    e.preventDefault();
+    try{
+      let {data:dataUser,error}=await supabase
+    .auth
+    .signUp(getUserDetails());
     if(dataUser){
       console.log(data);
       const router=useRouter();
@@ -32,11 +52,11 @@ export default function LoginPage() {
   return (
     <div>
       <div>
-        <form onSubmit={login}>
-          <input type="email" name="email" placeholder="Email" />
-          <input type="password" name="password" placeholder="Password" />
-          <button type="submit">Login</button>
-          <button>Register</button>
+        <form >
+          <input type="email" name="email" placeholder="Email" id="email" />
+          <input type="password" name="password" placeholder="Password" id="pass" />
+          <button onClick={login}>Login</button>
+          <button onClick={signUp}>Sign Up</button>
         </form>
       </div>
     </div>
