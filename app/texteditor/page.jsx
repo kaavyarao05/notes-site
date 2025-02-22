@@ -13,6 +13,7 @@ import Link from "@tiptap/extension-link";
 import { Mark } from '@tiptap/core';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
+import {Undo,Redo,Trash2,Eraser,Palette} from "lucide-react";
 
 // Custom mark extension for word definitions
 const DefinitionMark = Mark.create({
@@ -397,45 +398,50 @@ export default function TextEditor() {
         <div className="flex-1 border p-4 rounded-md shadow-md">
           <h2 className="text-lg font-semibold mb-2">Drawing Canvas</h2>
 
-          <div className="mb-2 space-x-2">
-            <button
-              onClick={() => canvasRef.current.clearCanvas()}
-              className="px-3 py-1 bg-red-500 text-white rounded-md"
-            >
-              Clear
-            </button>
+          <div className="mb-2 space-x-2 relative flex">
+            
+
+            <div className="relative flex items-center space-x-2">
+              <Palette size={15} className="text-gray-700" />
+              <input
+                type="color"
+                value={brushColor}
+                onChange={(e) => {
+                  console.log(canvasRef.current);
+                  setBrushColor(e.target.value);
+                  canvasRef.current.eraseMode(false);
+                  canvasRef.current.brushColor = e.target.value;
+                }}
+                className="w-7 h-7 border rounded-full cursor-pointer"
+              />
+            </div>
 
             <button
               onClick={() => canvasRef.current.undo()}
-              className="px-3 py-1 bg-gray-500 text-white rounded-md"
+              className="p-1 bg-gray-500 text-white rounded-md"
             >
-              Undo
+              <Undo size={15} />
             </button>
 
             <button
               onClick={() => canvasRef.current.redo()}
-              className="px-3 py-1 bg-gray-500 text-white rounded-md"
+              className="p-1 bg-gray-500 text-white rounded-md"
             >
-              Redo
+              <Redo size={15} />
             </button>
-
-            <input
-              type="color"
-              value={brushColor}
-              onChange={(e) => {
-                console.log(canvasRef.current);
-                setBrushColor(e.target.value);
-                canvasRef.current.eraseMode(false);
-                canvasRef.current.brushColor=e.target.value;
-              }}
-              className="px-2 py-1 border rounded"
-            />
 
             <button
               onClick={() => canvasRef.current.eraseMode(true)}
-              className="px-3 py-1 bg-yellow-500 text-black rounded-md"
+              className="p-1 bg-yellow-500 text-black rounded-md"
             >
-              Eraser
+              <Eraser size={15} />
+            </button>
+
+            <button
+              onClick={() => canvasRef.current.clearCanvas()}
+              className="p-1 bg-red-500 text-white rounded-md"
+            >
+              <Trash2 size={15} />
             </button>
           </div>
 
