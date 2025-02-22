@@ -15,7 +15,8 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import {Undo,Redo,Trash2,Eraser,Palette,Clipboard,Download} from "lucide-react";
 import Placeholder from "@tiptap/extension-placeholder";
-import canvas from "@app/1components/canvas";
+import canvas from "@/app/1components/canvas";
+import Image from "@tiptap/extension-image";
 
 
 // Custom mark extension for word definitions
@@ -121,6 +122,7 @@ export default function TextEditor() {
       Placeholder,//.configure({
        // placeholder:"Start writing here...",
       //}),
+      Image,
     ],
     content: "Start typing...",
     onUpdate: ({ editor }) => {
@@ -129,6 +131,34 @@ export default function TextEditor() {
     },
     
   });
+
+  useEffect(() => {
+    if (!editor) return;
+  
+    const handlePaste = async (event) => {
+      const items = event.clipboardData?.items;
+  
+      if (items) {
+        for (let item of items) {
+          if (item.type.startsWith("image/")) {
+            event.preventDefault();
+            const file = item.getAsFile();
+            if (!file) return;
+  
+            const reader = new FileReader();
+            reader.onload = () => {
+              editor.chain().focus().setImage({ src: reader.result }).run();
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+      }
+    };
+  
+    document.addEventListener("paste", handlePaste);
+    return () => document.removeEventListener("paste", handlePaste);
+  }, [editor]);
+  
 
   const setupDefinitionTooltips = () => {
     if (!editor) return;

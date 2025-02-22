@@ -61,6 +61,7 @@ export default function Home() {
       {
         title:"new",
         preview:"Click to Edit",
+        
         color:getRandomColour(),
         id:getId()
       }
