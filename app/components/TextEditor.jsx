@@ -248,3 +248,29 @@ export default function TextEditor() {
             <option value="Trebuchet MS">Trebuchet MS</option>
             <option value="Verdana">Verdana</option>
             <option value="Franklin Gothic Medium">Franklin Gothic Medium</option>
+
+
+//copy paste
+            editorProps: {
+              handlePaste(view, event) {
+                const items = event.clipboardData?.items;
+                if (items) {
+                  for (const item of items) {
+                    if (item.type.startsWith("image/")) {
+                      const file = item.getAsFile();
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        const base64 = reader.result;
+                        view.dispatch(
+                          view.state.tr.insert(view.state.selection.from, 
+                          view.state.schema.nodes.image.create({ src: base64 }))
+                        );
+                      };
+                      reader.readAsDataURL(file);
+                      return true;
+                    }
+                  }
+                }
+                return false;
+              },
+            },

@@ -126,29 +126,7 @@ export default function TextEditor() {
       // This ensures definitions are properly displayed after content changes
       setTimeout(() => setupDefinitionTooltips(), 100);
     },
-    editorProps: {
-      handlePaste(view, event) {
-        const items = event.clipboardData?.items;
-        if (items) {
-          for (const item of items) {
-            if (item.type.startsWith("image/")) {
-              const file = item.getAsFile();
-              const reader = new FileReader();
-              reader.onload = () => {
-                const base64 = reader.result;
-                view.dispatch(
-                  view.state.tr.insert(view.state.selection.from, 
-                  view.state.schema.nodes.image.create({ src: base64 }))
-                );
-              };
-              reader.readAsDataURL(file);
-              return true;
-            }
-          }
-        }
-        return false;
-      },
-    },
+    
   });
 
   const setupDefinitionTooltips = () => {
