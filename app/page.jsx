@@ -1,13 +1,46 @@
 "use client"
 import { useState } from 'react';
 import Card from '@/app/1components/Card';
-import {getNotes,getId,setNotes} from "@/app/data.js"
 
 const colors=[
   "#ffcdd6",
   "#9fffdf",
   "#a7e9ff"
 ]
+
+var id=1;
+export function getId(){
+    return(id++);
+}
+
+var notesDat=[ //fetch instead
+    {
+      title:"Test Title",
+      preview:"Preview",
+      color:"#ffcdd6",
+      id:getId()
+    },
+    {
+      title:"Test Title",
+      preview:"Preview",
+      color:"#9fffdf",
+      id:getId()
+    },
+    {
+      title:"Test Title",
+      preview:"Preview",
+      color:"#a7e9ff",
+      id:getId()
+    }
+]
+export function setNotes(note){
+    notesDat=[...notesDat,note];
+    return notesDat
+}
+
+export function getNotes(){
+    return notesDat;
+}
 
 function getRandomColour(){
   return(colors[Math.floor(Math.random() * colors.length)]);
