@@ -50,9 +50,9 @@ export default function Header({ username,addnote,random_color }) {
 
         {/* Menu Items */}
         <nav className="mt-10 flex flex-col space-y-4">
-          <button href="/" className="text-lg font-semibold text-[#C2185B]">
+          <a href="/" className="text-lg font-semibold text-[#C2185B]">
             Home
-          </button>
+          </a>
           <button href="/about" className="text-lg font-semibold text-[#C2185B]">
             New note
           </button>

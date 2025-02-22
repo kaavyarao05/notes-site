@@ -15,6 +15,7 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import {Undo,Redo,Trash2,Eraser,Palette,Clipboard,Download} from "lucide-react";
 import Placeholder from "@tiptap/extension-placeholder";
+import canvas from "@app/1components/canvas";
 
 
 // Custom mark extension for word definitions
