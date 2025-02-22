@@ -9,7 +9,7 @@ const colors=[
 ]
 
 var id=1;
-export function getId(){
+function getId(){
     return(id++);
 }
 
@@ -33,12 +33,8 @@ var notesDat=[ //fetch instead
       id:getId()
     }
 ]
-export function setNotes(note){
-    notesDat=[...notesDat,note];
-    return notesDat
-}
 
-export function getNotes(){
+function getNotes(){
     return notesDat;
 }
 
@@ -47,8 +43,7 @@ function getRandomColour(){
 }
 
 export default function Home() {
-  const noteDat= getNotes();
-  const [notes,setNoteComponent]=useState(noteDat);
+  const [notes,setNoteComponent]=useState(getNotes());
 
   const noteComponents=notes.map((note)=>
     <Card
@@ -60,14 +55,14 @@ export default function Home() {
       />
   )
   const handleAddNote=()=>{
-    setNoteComponent(setNotes(
+    setNoteComponent([...notes,
       {
         title:"new",
         preview:"Click to Edit",
         color:getRandomColour(),
         id:getId()
       }
-    ));
+    ]);
   }
   
   const handleSignOut=()=>{
