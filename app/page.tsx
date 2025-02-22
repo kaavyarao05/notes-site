@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Card from '@/app/1components/Card';
 import {getNotes,getId,setNotes} from "@/app/data.js"
 
