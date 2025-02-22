@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { useEditor, EditorContent, Extension } from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import TextStyle from "@tiptap/extension-text-style";
@@ -10,18 +10,28 @@ import Highlight from "@tiptap/extension-highlight";
 import FontFamily from "@tiptap/extension-font-family";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 import Link from "@tiptap/extension-link";
+import { Mark } from '@tiptap/core';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 
-// Custom extension for word definitions
-const WordDefinition = Extension.create({
-  name: 'wordDefinition',
+// Custom mark extension for word definitions
+const DefinitionMark = Mark.create({
+  name: 'definition',
+  
+  addOptions() {
+    return {
+      HTMLAttributes: {},
+    };
+  },
   
   addAttributes() {
     return {
-      definition: {
+      definitionText: {
         default: null,
       },
+      definitionId: {
+        default: () => `def-${Math.random().toString(36).substr(2, 9)}`,
+      }
     };
   },
   
@@ -30,27 +40,32 @@ const WordDefinition = Extension.create({
       {
         tag: 'span[data-definition]',
         getAttrs: element => ({
-          definition: element.getAttribute('data-definition'),
+          definitionText: element.getAttribute('data-definition'),
+          definitionId: element.getAttribute('data-definition-id') || `def-${Math.random().toString(36).substr(2, 9)}`,
         }),
       },
     ];
   },
   
   renderHTML({ HTMLAttributes }) {
-    return ['span', { ...HTMLAttributes, 'data-definition': HTMLAttributes.definition }, 0];
+    return ['span', {
+      ...this.options.HTMLAttributes,
+      'data-definition': HTMLAttributes.definitionText,
+      'data-definition-id': HTMLAttributes.definitionId,
+      'class': 'definition-word'
+    }, 0];
   },
   
   addCommands() {
     return {
-      setWordDefinition: definition => ({ chain }) => {
-        return chain()
-          .setMark('wordDefinition', { definition })
-          .run();
+      setDefinition: (definitionText) => ({ commands }) => {
+        return commands.setMark(this.name, { 
+          definitionText,
+          definitionId: `def-${Math.random().toString(36).substr(2, 9)}`
+        });
       },
-      unsetWordDefinition: () => ({ chain }) => {
-        return chain()
-          .unsetMark('wordDefinition')
-          .run();
+      unsetDefinition: () => ({ commands }) => {
+        return commands.unsetMark(this.name);
       },
     };
   },
@@ -63,19 +78,29 @@ export default function TextEditor() {
   const [selectedText, setSelectedText] = useState("");
   const [definitionInput, setDefinitionInput] = useState("");
   const [definitionPosition, setDefinitionPosition] = useState({ x: 0, y: 0 });
+  const [activeTooltips, setActiveTooltips] = useState({});
   const [allDefinitions, setAllDefinitions] = useState({});
+  const tooltipInstancesRef = useRef({});
 
   // Load saved definitions from localStorage
   useEffect(() => {
-    const savedDefinitions = localStorage.getItem('wordDefinitions');
-    if (savedDefinitions) {
-      setAllDefinitions(JSON.parse(savedDefinitions));
+    try {
+      const savedDefinitions = localStorage.getItem('wordDefinitions');
+      if (savedDefinitions) {
+        setAllDefinitions(JSON.parse(savedDefinitions));
+      }
+    } catch (error) {
+      console.error("Error loading definitions:", error);
     }
   }, []);
 
   // Save definitions to localStorage when they change
   useEffect(() => {
-    localStorage.setItem('wordDefinitions', JSON.stringify(allDefinitions));
+    try {
+      localStorage.setItem('wordDefinitions', JSON.stringify(allDefinitions));
+    } catch (error) {
+      console.error("Error saving definitions:", error);
+    }
   }, [allDefinitions]);
 
   const editor = useEditor({
@@ -88,37 +113,85 @@ export default function TextEditor() {
       Highlight.configure({ multicolor: true }),
       FontFamily.configure({ types: ["textStyle"] }),
       Link.configure({ openOnClick: true, autolink: true }),
-      WordDefinition,
+      DefinitionMark,
     ],
-    content: "<p>Enter text....</p>",
+    content: "<p>Enter text.... Select any word, right-click, and add a definition to try it out!</p>",
     onUpdate: ({ editor }) => {
       // This ensures definitions are properly displayed after content changes
-      setupDefinitionTooltips();
+      setTimeout(() => setupDefinitionTooltips(), 100);
     },
   });
 
   const setupDefinitionTooltips = () => {
     if (!editor) return;
     
+    // Clean up existing tooltips first
+    Object.values(tooltipInstancesRef.current).forEach(instance => {
+      if (instance && instance.destroy) {
+        instance.destroy();
+      }
+    });
+    tooltipInstancesRef.current = {};
+    
     // Find all elements with data-definition attribute
     const definitionElements = editor.view.dom.querySelectorAll('span[data-definition]');
     
+    // Create new tooltip instances
     definitionElements.forEach(element => {
       const definition = element.getAttribute('data-definition');
+      const definitionId = element.getAttribute('data-definition-id') || 
+                          `def-${Math.random().toString(36).substr(2, 9)}`;
       
-      tippy(element, {
+      // Ensure the element has a definition ID attribute
+      if (!element.hasAttribute('data-definition-id')) {
+        element.setAttribute('data-definition-id', definitionId);
+      }
+      
+      const instance = tippy(element, {
         content: definition,
         arrow: true,
         placement: 'top',
         theme: 'light-border',
-        trigger: 'click',
+        trigger: 'manual', // Manual trigger for click toggle behavior
         interactive: true,
         appendTo: document.body,
       });
       
+      tooltipInstancesRef.current[definitionId] = instance;
+      
       // Add visual indicator that this word has a definition
       element.style.borderBottom = '1px dotted #3b82f6';
       element.style.cursor = 'pointer';
+      
+      // Add click event to toggle tooltip visibility
+      const clickHandler = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const isVisible = activeTooltips[definitionId];
+        
+        // Hide all tooltips first
+        Object.entries(tooltipInstancesRef.current).forEach(([id, tip]) => {
+          tip.hide();
+        });
+        
+        // Update active tooltips state
+        const newActiveTooltips = {};
+        
+        // If this tooltip wasn't visible, show it (toggle behavior)
+        if (!isVisible) {
+          instance.show();
+          newActiveTooltips[definitionId] = true;
+        }
+        
+        setActiveTooltips(newActiveTooltips);
+        
+        return false;
+      };
+      
+      // Remove any existing click handler to prevent duplication
+      element.removeEventListener('click', clickHandler);
+      element.addEventListener('click', clickHandler);
     });
   };
 
@@ -127,7 +200,7 @@ export default function TextEditor() {
       // Set up context menu for definition creation
       const editorElement = editor.view.dom;
       
-      editorElement.addEventListener('contextmenu', (e) => {
+      const contextMenuHandler = (e) => {
         const selection = editor.view.state.selection;
         if (!selection.empty) {
           e.preventDefault();
@@ -140,10 +213,19 @@ export default function TextEditor() {
           setDefinitionPosition({ x: e.pageX, y: e.pageY });
           setDefinitionModalOpen(true);
         }
-      });
+      };
+      
+      // Remove any existing context menu handler to prevent duplication
+      editorElement.removeEventListener('contextmenu', contextMenuHandler);
+      editorElement.addEventListener('contextmenu', contextMenuHandler);
       
       // Initial setup of definition tooltips
       setupDefinitionTooltips();
+      
+      return () => {
+        // Clean up event listener
+        editorElement.removeEventListener('contextmenu', contextMenuHandler);
+      };
     }
   }, [editor]);
 
@@ -156,11 +238,12 @@ export default function TextEditor() {
       [selectedText]: definitionInput
     }));
     
-    // Apply to editor content
+    // Apply to editor content with a unique ID
+    const definitionId = `def-${Math.random().toString(36).substr(2, 9)}`;
     editor
       .chain()
       .focus()
-      .setWordDefinition(definitionInput)
+      .setDefinition(definitionInput)
       .run();
     
     // Reset and close modal
@@ -168,6 +251,26 @@ export default function TextEditor() {
     setDefinitionModalOpen(false);
     
     // Refresh tooltips
+    setTimeout(setupDefinitionTooltips, 100);
+  };
+
+  const insertDefinedWord = (word, definition) => {
+    if (!editor) return;
+    
+    const definitionId = `def-${Math.random().toString(36).substr(2, 9)}`;
+    
+    editor.chain().focus().insertContent({
+      type: 'text',
+      marks: [{ 
+        type: 'definition', 
+        attrs: { 
+          definitionText: definition,
+          definitionId
+        } 
+      }],
+      text: word
+    }).run();
+    
     setTimeout(setupDefinitionTooltips, 100);
   };
 
@@ -188,25 +291,25 @@ export default function TextEditor() {
           <div className="mb-2 space-x-2">
             <button
               onClick={() => editor.chain().focus().toggleBold().run()}
-              className="px-2 py-1 border rounded font-bold"
+              className={`px-2 py-1 border rounded font-bold ${editor.isActive('bold') ? 'bg-gray-200' : ''}`}
             >
               B
             </button>
             <button
               onClick={() => editor.chain().focus().toggleItalic().run()}
-              className="px-2 py-1 border rounded italic"
+              className={`px-2 py-1 border rounded italic ${editor.isActive('italic') ? 'bg-gray-200' : ''}`}
             >
               I
             </button>
             <button
               onClick={() => editor.chain().focus().toggleUnderline().run()}
-              className="px-2 py-1 border rounded underline"
+              className={`px-2 py-1 border rounded underline ${editor.isActive('underline') ? 'bg-gray-200' : ''}`}
             >
               U
             </button>
             <button
               onClick={() => editor.chain().focus().toggleStrike().run()}
-              className="px-2 py-1 border rounded"
+              className={`px-2 py-1 border rounded ${editor.isActive('strike') ? 'bg-gray-200' : ''}`}
             >
               S
             </button>
@@ -214,56 +317,22 @@ export default function TextEditor() {
             <select
               onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
               className="px-2 py-1 border rounded"
+              value={editor.getAttributes('textStyle').fontFamily || ''}
             >
-                <option value="">Default</option>
-                <option value="Arial">Arial</option>
-                <option value="Arial Narrow">Arial Narrow</option>
-                <option value="Baskerville">Baskerville</option>
-                <option value="Bodoni MT">Bodoni MT</option>
-                <option value="Bookman">Bookman</option>
-                <option value="Brush Script MT">Brush Script MT</option>
-                <option value="Candara">Candara</option>
-                <option value="Century Gothic">Century Gothic</option>
-                <option value="Comic Sans MS">Comic Sans MS</option>
-                <option value="Consolas">Consolas</option>
-                <option value="Copperplate">Copperplate</option>
-                <option value="Courier">Courier</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Didot">Didot</option>
-                <option value="Futura">Futura</option>
-                <option value="Garamond">Garamond</option>
-                <option value="Geneva">Geneva</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Gill Sans">Gill Sans</option>
-                <option value="Helvetica">Helvetica</option>
-                <option value="Impact">Impact</option>
-                <option value="Lato">Lato</option>
-                <option value="Lucida Console">Lucida Console</option>
-                <option value="Lucida Handwriting">Lucida Handwriting</option>
-                <option value="Lucida Sans Unicode">Lucida Sans Unicode</option>
-                <option value="Monaco">Monaco</option>
-                <option value="MS Sans Serif">MS Sans Serif</option>
-                <option value="MS Serif">MS Serif</option>
-                <option value="Open Sans">Open Sans</option>
-                <option value="Palatino Linotype">Palatino Linotype</option>
-                <option value="Perpetua">Perpetua</option>
-                <option value="Playfair Display">Playfair Display</option>
-                <option value="Roboto">Roboto</option>
-                <option value="Rockwell">Rockwell</option>
-                <option value="Segoe UI">Segoe UI</option>
-                <option value="Tahoma">Tahoma</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Trebuchet MS">Trebuchet MS</option>
-                <option value="Verdana">Verdana</option>
-                <option value="Franklin Gothic Medium">Franklin Gothic Medium</option>
-
-              {/* Other font options remain the same */}
+              <option value="">Default</option>
+              <option value="Arial">Arial</option>
+              <option value="Comic Sans MS">Comic Sans MS</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Helvetica">Helvetica</option>
+              <option value="Times New Roman">Times New Roman</option>
             </select>
 
             {/* Font Color */}
             <input
               type="color"
               onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
+              value={editor.getAttributes('textStyle').color || '#000000'}
               className="px-2 py-1 border rounded"
             />
 
@@ -290,7 +359,7 @@ export default function TextEditor() {
               🔗 Add Link
             </button>
 
-            {/* New button to add definition to selected text */}
+            {/* Add definition button */}
             <button
               onClick={() => {
                 const selection = editor.view.state.selection;
@@ -301,6 +370,10 @@ export default function TextEditor() {
                     ' '
                   );
                   setSelectedText(selectedText);
+                  setDefinitionPosition({ 
+                    x: window.innerWidth / 2, 
+                    y: window.innerHeight / 2 - 100 
+                  });
                   setDefinitionModalOpen(true);
                 } else {
                   alert("Please select text first to add a definition");
@@ -313,7 +386,11 @@ export default function TextEditor() {
             </button>
           </div>
 
-          <EditorContent editor={editor} />
+          <div className="border p-2 mb-4 bg-gray-50 text-sm rounded">
+            <p><strong>How to use:</strong> Select any text, then right-click or use the "Add Definition" button to create a definition. Click on defined words (with dotted underline) to show/hide definitions.</p>
+          </div>
+
+          <EditorContent editor={editor} className="prose max-w-none min-h-64" />
         </div>
 
         {/* ✏️ Drawing Area */}
@@ -372,8 +449,8 @@ export default function TextEditor() {
               position: 'absolute',
               left: `${definitionPosition.x}px`,
               top: `${definitionPosition.y}px`,
-              transform: 'translate(-50%, -100%)',
-              maxWidth: '300px'
+              transform: 'translate(-50%, -50%)',
+              maxWidth: '500px'
             }}
           >
             <h3 className="text-lg font-semibold mb-2">Add Definition for "{selectedText}"</h3>
@@ -413,21 +490,44 @@ export default function TextEditor() {
               <div key={word} className="border p-2 rounded-md">
                 <h3 className="font-medium text-blue-600">{word}</h3>
                 <p className="text-sm">{definition}</p>
-                <button 
-                  onClick={() => {
-                    const newDefinitions = {...allDefinitions};
-                    delete newDefinitions[word];
-                    setAllDefinitions(newDefinitions);
-                  }}
-                  className="text-xs text-red-500 mt-1"
-                >
-                  Delete
-                </button>
+                <div className="flex justify-between mt-2">
+                  <button 
+                    onClick={() => insertDefinedWord(word, definition)}
+                    className="text-xs text-blue-500"
+                  >
+                    Insert
+                  </button>
+                  <button 
+                    onClick={() => {
+                      const newDefinitions = {...allDefinitions};
+                      delete newDefinitions[word];
+                      setAllDefinitions(newDefinitions);
+                    }}
+                    className="text-xs text-red-500"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* CSS for definition words */}
+      <style jsx global>{`
+        .definition-word {
+          border-bottom: 1px dotted #3b82f6;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+        .definition-word:hover {
+          background-color: rgba(59, 130, 246, 0.1);
+        }
+        .tippy-box {
+          max-width: 300px !important;
+        }
+      `}</style>
     </main>
   );
 }
