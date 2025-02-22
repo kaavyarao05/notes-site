@@ -461,8 +461,8 @@ export default function TextEditor() {
             >
               📝 Add Definition
             </button>
-            <button className="px-2 py-1 border rounded bg-gray-200">Canvas</button>
-            <button className="px-2 py-1 border rounded bg-gray-200">Save</button>
+            <button className="px-2 py-1 border rounded">Canvas</button>
+            <button className="px-2 py-1 border rounded">Save</button>
           </div>
           <div className="flex-1 overflow-auto border rounded p-2">
             <EditorContent editor={editor} className="prose max-w-none min-h-64" />
