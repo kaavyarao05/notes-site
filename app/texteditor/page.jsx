@@ -14,6 +14,7 @@ import { Mark } from '@tiptap/core';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import {Undo,Redo,Trash2,Eraser,Palette,Clipboard,Download} from "lucide-react";
+import Placeholder from "@tiptap/extension-placeholder";
 
 
 // Custom mark extension for word definitions
@@ -116,35 +117,16 @@ export default function TextEditor() {
       FontFamily.configure({ types: ["textStyle"] }),
       Link.configure({ openOnClick: true, autolink: true }),
       DefinitionMark,
+      Placeholder,//.configure({
+       // placeholder:"Start writing here...",
+      //}),
     ],
-    content: "<p>Enter text.... Select any word, right-click, and add a definition to try it out!</p>",
+    content: "Start typing...",
     onUpdate: ({ editor }) => {
       // This ensures definitions are properly displayed after content changes
       setTimeout(() => setupDefinitionTooltips(), 100);
     },
-    editorProps: {
-      handlePaste(view, event) {
-        const items = event.clipboardData?.items;
-        if (items) {
-          for (const item of items) {
-            if (item.type.startsWith("image/")) {
-              const file = item.getAsFile();
-              const reader = new FileReader();
-              reader.onload = () => {
-                const base64 = reader.result;
-                view.dispatch(
-                  view.state.tr.insert(view.state.selection.from, 
-                  view.state.schema.nodes.image.create({ src: base64 }))
-                );
-              };
-              reader.readAsDataURL(file);
-              return true;
-            }
-          }
-        }
-        return false;
-      },
-    },
+    
   });
 
   const setupDefinitionTooltips = () => {
@@ -308,7 +290,6 @@ export default function TextEditor() {
       <h1 className="text-2xl font-bold mb-4">My Note-Taking App</h1>
 
       {/* Flex container for text editor and drawing area */}
-      <div className="flex flex-col md:flex-row gap-6 overflow-hidden">
 
         {/* ✍️ Text Editor */}
         <div className="flex-1 flex flex-col border p-4 rounded-md shadow-md overflow-hidden">
@@ -345,6 +326,8 @@ export default function TextEditor() {
               className="px-2 py-1 border rounded"
               value={editor.getAttributes('textStyle').fontFamily || ''}
             >
+              <>
+              
               <option value="">Default</option>
               <option value="Arial">Arial</option>
               <option value="Arial Narrow">Arial Narrow</option>
@@ -386,7 +369,7 @@ export default function TextEditor() {
               <option value="Trebuchet MS">Trebuchet MS</option>
               <option value="Verdana">Verdana</option>
               <option value="Franklin Gothic Medium">Franklin Gothic Medium</option>
-
+              </>
             </select>
 
             {/* Font Color */}
@@ -451,81 +434,7 @@ export default function TextEditor() {
             <EditorContent editor={editor} className="prose max-w-none min-h-64" />
           </div>
           
-        </div>
-
-        {/* ✏️ Drawing Area */}
-        <div className="flex-1 border p-4 rounded-md shadow-md">
-          <h2 className="text-lg font-semibold mb-2">Drawing Canvas</h2>
-
-          <div className="mb-2 space-x-2 relative flex">
-            
-
-            <div className="relative flex items-center space-x-2">
-              <Palette size={15} className="text-gray-700" />
-              <input
-                type="color"
-                value={brushColor}
-                onChange={(e) => {
-                  console.log(canvasRef.current);
-                  setBrushColor(e.target.value);
-                  canvasRef.current.eraseMode(false);
-                  canvasRef.current.brushColor = e.target.value;
-                }}
-                className="w-7 h-7 border rounded-full cursor-pointer"
-              />
-            </div>
-
-            <button
-              onClick={() => canvasRef.current.undo()}
-              className="p-1 bg-gray-500 text-white rounded-md"
-            >
-              <Undo size={15} />
-            </button>
-
-            <button
-              onClick={() => canvasRef.current.redo()}
-              className="p-1 bg-gray-500 text-white rounded-md"
-            >
-              <Redo size={15} />
-            </button>
-
-            <button
-              onClick={() => canvasRef.current.eraseMode(true)}
-              className="p-1 bg-yellow-500 text-black rounded-md"
-            >
-              <Eraser size={15} />
-            </button>
-
-            <button
-              onClick={() => canvasRef.current.clearCanvas()}
-              className="p-1 bg-red-500 text-white rounded-md"
-            >
-              <Trash2 size={15} />
-            </button>
-
-            <button 
-              //onClick={copyCanvasToClipboard}
-              className="p-1 rounded-md"
-            >
-              <Clipboard size={15} />
-            </button>
-
-            <button
-              //onClick={saveCanvasAsImage}
-              className="p-1 rounded-md"
-            >
-              <Download size={15} />
-            </button>
-          </div>
-
-          <ReactSketchCanvas
-            ref={canvasRef}
-            strokeWidth={4}
-            strokeColor={brushColor}
-            className="w-full h-80 border"
-          />
-        </div>
-      </div>
+        </div>  
 
       {/* Definition Modal */}
       {definitionModalOpen && (

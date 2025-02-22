@@ -1,6 +1,7 @@
 "use client"
 import { useState } from 'react';
 import Card from '@/app/1components/Card';
+import Navbar from '@/app/1components/Navbar'
 
 const colors=[
   "#ffcdd6",
@@ -66,16 +67,9 @@ export default function Home() {
     ]);
   }
   
-  const handleSignOut=()=>{
-    window.location.replace("/login")
-  }
-  
   return (
     <div>
-      <div>
-        <button onClick={handleSignOut}>TestUser</button>
-        <button onClick={handleAddNote}>+</button>
-      </div>
+      <Navbar username="test" addnote={handleAddNote} random_color={getRandomColour}/>
       <div>
         {noteComponents}
       </div>
