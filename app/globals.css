@@ -2,10 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
+
+.ProseMirror {
+  font-family: inherit !important;
+  color: inherit !important;
+}
+
+.ProseMirror a {
+  color: inherit; /* Default color */
+  text-decoration: none; /* Remove default underline */
+  transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
+}
+
+.ProseMirror a:hover {
+  color: blue;
+  text-decoration: underline;
+}
+
+
 
 /*
 @media (prefers-color-scheme: dark) {
