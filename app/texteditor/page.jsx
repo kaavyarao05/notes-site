@@ -15,10 +15,9 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import {Undo,Redo,Trash2,Eraser,Palette,Clipboard,Download} from "lucide-react";
 import Placeholder from "@tiptap/extension-placeholder";
-import canvas from "@/app/1components/canvas";
 import Image from "@tiptap/extension-image";
-import Canvas from "@/app/1components-image";
-
+//import Canvas from "@/app/1components/Canvas";
+import Navbar from "@/app/1components/Navbar";
 
 // Custom mark extension for word definitions
 const DefinitionMark = Mark.create({
@@ -318,7 +317,8 @@ export default function TextEditor() {
   }
 
   return (
-    <main className="p-6 h-screen flex flex-col">
+    <main className="pb-6 h-screen flex flex-col">
+      <Navbar />
       <h1 className="text-2xl font-bold mb-4">My Note-Taking App</h1>
 
       {/* Flex container for text editor and drawing area */}
@@ -461,7 +461,8 @@ export default function TextEditor() {
             >
               📝 Add Definition
             </button>
-            <button>Canvas</button>
+            <button className="px-2 py-1 border rounded bg-gray-200">Canvas</button>
+            <button className="px-2 py-1 border rounded bg-gray-200">Save</button>
           </div>
           <div className="flex-1 overflow-auto border rounded p-2">
             <EditorContent editor={editor} className="prose max-w-none min-h-64" />
