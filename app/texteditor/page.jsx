@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -24,10 +24,7 @@ export default function TextEditor() {
       Strike,
       Highlight.configure({ multicolor: true }),
       FontFamily.configure({ types: ["textStyle"] }),
-      Link.configure({
-        openOnClick: true,
-        autolink: true,
-      })
+      Link.configure({ openOnClick: true,autolink: true,})
     ],
     content: "<p>Enter text....</p>",
   });
@@ -37,11 +34,11 @@ export default function TextEditor() {
   }
 
   return (
-    <main className="p-6">
+    <main className="p-6 h-screen flex flex-col">
       <h1 className="text-2xl font-bold mb-4">My Note-Taking App</h1>
 
       {/* Flex container for text editor and drawing area */}
-      <div className="flex flex-col md:flex-row gap-6">
+      <div className="flex flex-col md:flex-row gap-6 overflow-hidden">
         {/* ✍️ Text Editor */}
         <div className="flex-1 border p-4 rounded-md shadow-md">
           <h2 className="text-lg font-semibold mb-2">Text Editor</h2>
@@ -76,47 +73,47 @@ export default function TextEditor() {
               onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
               className="px-2 py-1 border rounded"
             >
-              <option value="">Default</option>
-              <option value="Arial">Arial</option>
-              <option value="Arial Narrow">Arial Narrow</option>
-              <option value="Baskerville">Baskerville</option>
-              <option value="Bodoni MT">Bodoni MT</option>
-              <option value="Bookman">Bookman</option>
-              <option value="Brush Script MT">Brush Script MT</option>
-              <option value="Candara">Candara</option>
-              <option value="Century Gothic">Century Gothic</option>
-              <option value="Comic Sans MS">Comic Sans MS</option>
-              <option value="Consolas">Consolas</option>
-              <option value="Copperplate">Copperplate</option>
-              <option value="Courier">Courier</option>
-              <option value="Courier New">Courier New</option>
-              <option value="Didot">Didot</option>
-              <option value="Futura">Futura</option>
-              <option value="Garamond">Garamond</option>
-              <option value="Geneva">Geneva</option>
-              <option value="Georgia">Georgia</option>
-              <option value="Gill Sans">Gill Sans</option>
-              <option value="Helvetica">Helvetica</option>
-              <option value="Impact">Impact</option>
-              <option value="Lato">Lato</option>
-              <option value="Lucida Console">Lucida Console</option>
-              <option value="Lucida Handwriting">Lucida Handwriting</option>
-              <option value="Lucida Sans Unicode">Lucida Sans Unicode</option>
-              <option value="Monaco">Monaco</option>
-              <option value="MS Sans Serif">MS Sans Serif</option>
-              <option value="MS Serif">MS Serif</option>
-              <option value="Open Sans">Open Sans</option>
-              <option value="Palatino Linotype">Palatino Linotype</option>
-              <option value="Perpetua">Perpetua</option>
-              <option value="Playfair Display">Playfair Display</option>
-              <option value="Roboto">Roboto</option>
-              <option value="Rockwell">Rockwell</option>
-              <option value="Segoe UI">Segoe UI</option>
-              <option value="Tahoma">Tahoma</option>
-              <option value="Times New Roman">Times New Roman</option>
-              <option value="Trebuchet MS">Trebuchet MS</option>
-              <option value="Verdana">Verdana</option>
-              <option value="Franklin Gothic Medium">Franklin Gothic Medium</option>
+            <option value="">Default</option>
+            <option value="Arial">Arial</option>
+            <option value="Arial Narrow">Arial Narrow</option>
+            <option value="Baskerville">Baskerville</option>
+            <option value="Bodoni MT">Bodoni MT</option>
+            <option value="Bookman">Bookman</option>
+            <option value="Brush Script MT">Brush Script MT</option>
+            <option value="Candara">Candara</option>
+            <option value="Century Gothic">Century Gothic</option>
+            <option value="Comic Sans MS">Comic Sans MS</option>
+            <option value="Consolas">Consolas</option>
+            <option value="Copperplate">Copperplate</option>
+            <option value="Courier">Courier</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Didot">Didot</option>
+            <option value="Futura">Futura</option>
+            <option value="Garamond">Garamond</option>
+            <option value="Geneva">Geneva</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Gill Sans">Gill Sans</option>
+            <option value="Helvetica">Helvetica</option>
+            <option value="Impact">Impact</option>
+            <option value="Lato">Lato</option>
+            <option value="Lucida Console">Lucida Console</option>
+            <option value="Lucida Handwriting">Lucida Handwriting</option>
+            <option value="Lucida Sans Unicode">Lucida Sans Unicode</option>
+            <option value="Monaco">Monaco</option>
+            <option value="MS Sans Serif">MS Sans Serif</option>
+            <option value="MS Serif">MS Serif</option>
+            <option value="Open Sans">Open Sans</option>
+            <option value="Palatino Linotype">Palatino Linotype</option>
+            <option value="Perpetua">Perpetua</option>
+            <option value="Playfair Display">Playfair Display</option>
+            <option value="Roboto">Roboto</option>
+            <option value="Rockwell">Rockwell</option>
+            <option value="Segoe UI">Segoe UI</option>
+            <option value="Tahoma">Tahoma</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Trebuchet MS">Trebuchet MS</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Franklin Gothic Medium">Franklin Gothic Medium</option>
 
             </select>
 
