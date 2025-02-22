@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 import { Clipboard, Download, Eraser, Palette, Redo, Trash2, Undo } from "lucide-react";
 
-export default function DrawingCanvas() {
+export default function Canvas() {
   const canvasRef = useRef(null);
   const [brushColor, setBrushColor] = useState("#000000");
 
