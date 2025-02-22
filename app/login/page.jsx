@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "../lib/supabase"
+import { useRouter } from "next/router";
 
 export default function LoginPage() {
 
@@ -9,37 +10,31 @@ export default function LoginPage() {
     email:"",
     password:""
   });
-  const login=async()=>{
+  const login=async(e)=>{
+    e.preventDefault();
     try{
-      let {data,error}=await supabase
+      let {data:dataUser,error}=await supabase
     .auth
-    .signUp({
+    .signInWithPassword({
       email:"kaavyarao05@gmail.com",
       password:"password123"
-    })
+    });
+    if(dataUser){
+      console.log(data);
+      const router=useRouter();
+      router.refresh();
     }
+    } 
     catch(e){
       console.log(e);
-    }
-    
+    } 
   }
- 
-  async function handleSubmit(event) {
-    event.preventDefault()
- 
-    const formData = new FormData(event.currentTarget)
-    const email = formData.get('email')
-    const password = formData.get('password')
-    console.log(email+password)
- 
-  }
- 
   return (
     <div>
       <div>
         <form onSubmit={login}>
-          <input type="email" name="email" placeholder="Email" required />
-          <input type="password" name="password" placeholder="Password" required />
+          <input type="email" name="email" placeholder="Email" />
+          <input type="password" name="password" placeholder="Password" />
           <button type="submit">Login</button>
           <button>Register</button>
         </form>

@@ -8,9 +8,9 @@ const colors=[
   "#a7e9ff"
 ]
 
+let id=1
 function getId(){
-  const ran=Math.floor( Math.random()*999 ) + 100;
-    return(ran);
+  return(id++);
 }
 
 var notesDat=[ //fetch instead
@@ -39,7 +39,8 @@ function getNotes(){
 }
 
 function getRandomColour(){
-  return(colors[Math.floor(Math.random() * colors.length)]);
+  return(colors[0])
+  //return(colors[Math.floor(Math.random() * colors.length)]);
 }
 
 export default function Home() {
