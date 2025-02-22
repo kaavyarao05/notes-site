@@ -284,8 +284,9 @@ export default function TextEditor() {
 
       {/* Flex container for text editor and drawing area */}
       <div className="flex flex-col md:flex-row gap-6 overflow-hidden">
+
         {/* ✍️ Text Editor */}
-        <div className="flex-1 border p-4 rounded-md shadow-md">
+        <div className="flex-1 flex flex-col border p-4 rounded-md shadow-md overflow-hidden">
           <h2 className="text-lg font-semibold mb-2">Text Editor</h2>
 
           <div className="mb-2 space-x-2">
@@ -386,12 +387,10 @@ export default function TextEditor() {
               📝 Add Definition
             </button>
           </div>
-
-          <div className="border p-2 mb-4 bg-gray-50 text-sm rounded">
-            <p><strong></strong></p>
+          <div className="flex-1 overflow-auto border rounded p-2">
+            <EditorContent editor={editor} className="prose max-w-none min-h-64" />
           </div>
-
-          <EditorContent editor={editor} className="prose max-w-none min-h-64" />
+          
         </div>
 
         {/* ✏️ Drawing Area */}
