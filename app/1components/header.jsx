@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import {Menu} from "lucide-react";
 
-export default function Header({username}) {
+export default function NavBar({username}) {
   return (
     <header className="bg-white text-[#C2185B] p-2 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
@@ -12,7 +12,7 @@ export default function Header({username}) {
 
         {/* Navigation Links */}
         <nav className="space-x-4">
-          <button href="/contact" className="hover:underline">
+          <button href="/contact" className="">
             <Menu size={40} />
           </button>
         </nav>
