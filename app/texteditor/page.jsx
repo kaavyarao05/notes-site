@@ -358,7 +358,7 @@ export default function TextEditor() {
               }}
               className="px-2 py-1 border rounded"
             >
-              🔗 Add Link
+              🔗
             </button>
 
             {/* Add definition button */}
