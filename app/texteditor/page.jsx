@@ -380,14 +380,15 @@ export default function TextEditor() {
                 }
               }}
               className="px-2 py-1 border rounded bg-blue-100"
-              title="Add a hidden definition to selected text"
+              title="Add a hidden definition to selected text
+                     How to use:  Select any text, then right-click or use the 'Add Definition' button to create a definition. Click on defined words (with dotted underline) to show/hide definitions."
             >
               📝 Add Definition
             </button>
           </div>
 
           <div className="border p-2 mb-4 bg-gray-50 text-sm rounded">
-            <p><strong>How to use:</strong> Select any text, then right-click or use the "Add Definition" button to create a definition. Click on defined words (with dotted underline) to show/hide definitions.</p>
+            <p><strong></strong></p>
           </div>
 
           <EditorContent editor={editor} className="prose max-w-none min-h-64" />
