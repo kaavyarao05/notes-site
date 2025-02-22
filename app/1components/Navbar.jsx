@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import TodoModal from "@/app/1components/TodoModal";
 
 const handleAddNote=()=>{
     setNoteComponent([...notes,
@@ -16,7 +17,7 @@ const handleAddNote=()=>{
 
 export default function Header({ username,addnote,random_color }) {
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const [isModalOpen,setIsModalOpen]=useState(false);
   return (
     <header className="bg-white text-[#C2185B] p-2 shadow-md mb-10">
       <div className="container mx-auto flex justify-between items-center">
@@ -50,18 +51,17 @@ export default function Header({ username,addnote,random_color }) {
 
         {/* Menu Items */}
         <nav className="mt-10 flex flex-col space-y-4">
-          <a href="/" className="text-lg font-semibold text-[#C2185B]">
+          <a href="/" className="text-lg font-semibold text-[#C2185B] ml-1.5">
             Home
           </a>
           <button href="/about" className="text-lg font-semibold text-[#C2185B]">
             New note
           </button>
-          <button href="/contact" className="text-lg font-semibold text-[#C2185B]">
+          <button onClick={()=>setIsModalOpen(true)}
+           className="text-lg font-semibold text-[#C2185B]">
             Checklist
           </button>
-          <button href="/contact" className="text-lg font-semibold text-[#C2185B]">
-            Canvas
-          </button>
+          <TodoModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </nav>
       </div>
     </header>

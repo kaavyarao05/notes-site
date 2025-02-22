@@ -17,6 +17,7 @@ import {Undo,Redo,Trash2,Eraser,Palette,Clipboard,Download} from "lucide-react";
 import Placeholder from "@tiptap/extension-placeholder";
 import canvas from "@/app/1components/canvas";
 import Image from "@tiptap/extension-image";
+import Canvas from "@/app/1components-image";
 
 
 // Custom mark extension for word definitions
@@ -460,6 +461,7 @@ export default function TextEditor() {
             >
               📝 Add Definition
             </button>
+            <button>Canvas</button>
           </div>
           <div className="flex-1 overflow-auto border rounded p-2">
             <EditorContent editor={editor} className="prose max-w-none min-h-64" />
