@@ -319,13 +319,18 @@ export default function TextEditor() {
   return (
     <main className="pb-6 h-screen flex flex-col">
       <Navbar />
-      <h1 className="text-2xl font-bold mb-4">My Note-Taking App</h1>
+      
+      <input
+        type="text"
+        placeholder="New note"
+        className="pl-5 text-2xl font-bold mb-4 border-b-2 focus:outline-none bg-transparent w-full"
+      />
+
 
       {/* Flex container for text editor and drawing area */}
 
         {/* ✍️ Text Editor */}
         <div className="flex-1 flex flex-col border p-4 rounded-md shadow-md overflow-hidden">
-          <h2 className="text-lg font-semibold mb-2">Text Editor</h2>
 
           <div className="mb-2 space-x-2">
             <button
