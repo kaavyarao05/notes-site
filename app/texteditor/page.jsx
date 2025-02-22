@@ -416,9 +416,10 @@ export default function TextEditor() {
               type="color"
               value={brushColor}
               onChange={(e) => {
+                console.log(canvasRef.current);
                 setBrushColor(e.target.value);
                 canvasRef.current.eraseMode(false);
-                canvasRef.current.setStrokeColor(e.target.value);
+                canvasRef.current.brushColor=e.target.value;
               }}
               className="px-2 py-1 border rounded"
             />
