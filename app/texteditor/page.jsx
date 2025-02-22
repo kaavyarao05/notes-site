@@ -14,6 +14,7 @@ import { Mark } from '@tiptap/core';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import {Undo,Redo,Trash2,Eraser,Palette,Clipboard,Download} from "lucide-react";
+import Placeholder from "@tiptap/extension-placeholder";
 
 
 // Custom mark extension for word definitions
@@ -116,8 +117,11 @@ export default function TextEditor() {
       FontFamily.configure({ types: ["textStyle"] }),
       Link.configure({ openOnClick: true, autolink: true }),
       DefinitionMark,
+      Placeholder,//.configure({
+       // placeholder:"Start writing here...",
+      //}),
     ],
-    content: "<p>Enter text.... Select any word, right-click, and add a definition to try it out!</p>",
+    content: "Start typing...",
     onUpdate: ({ editor }) => {
       // This ensures definitions are properly displayed after content changes
       setTimeout(() => setupDefinitionTooltips(), 100);
@@ -345,6 +349,8 @@ export default function TextEditor() {
               className="px-2 py-1 border rounded"
               value={editor.getAttributes('textStyle').fontFamily || ''}
             >
+              <>
+              
               <option value="">Default</option>
               <option value="Arial">Arial</option>
               <option value="Arial Narrow">Arial Narrow</option>
@@ -386,7 +392,7 @@ export default function TextEditor() {
               <option value="Trebuchet MS">Trebuchet MS</option>
               <option value="Verdana">Verdana</option>
               <option value="Franklin Gothic Medium">Franklin Gothic Medium</option>
-
+              </>
             </select>
 
             {/* Font Color */}
