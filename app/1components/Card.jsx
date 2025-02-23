@@ -3,10 +3,12 @@ import Image from 'next/image'
 import Trash from '@/public/trash.svg'
 
 const colourSelect=(choices,selectColorFunc,id)=>
-  <div className='absolute bottom-3 left-3 flex p-1 bg-white w-fit rounded-md selectCol'>
+  <div className='absolute bottom-3 left-3 flex bg-black border-4 border-white w-fit rounded-md selectCol'>
+    <div className='ml-1 flex'>
     {choices.map((col)=>
-      <button onClick={()=>selectColorFunc(col,id)} style={{backgroundColor:col}} className="h-8 w-8 border-black rounded-sm border-2" key={col}/>
+      <button onClick={()=>selectColorFunc(col,id)} style={{backgroundColor:col}} className="h-8 w-8 border-black -ml-1 border-2 hover:rounded-br-xl hover:rounded-tl-2xl duration-500" key={col}/>
       )}
+    </div>
   </div>
 
 const Card = (
