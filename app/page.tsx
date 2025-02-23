@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Card from '@/app/1components/Card';
 import { supabase } from './lib/supabase';
 import { useRouter } from 'next/navigation';
@@ -13,11 +13,6 @@ const colors=[
   "#a7e9ff"
 ]
 
-let id=1
-function getId(){
-  return(id++);
-}
-
 type noteType=
 {
   id:number,
@@ -25,7 +20,8 @@ type noteType=
   title:string,
   content:string,
   "user-email":string|null,
-  color:string
+  color:string,
+  colorChoices:Array<string>
 }
 
 type userData={
@@ -74,6 +70,9 @@ export default function Home() {
     )=>{
     await supabase.from('notes-noink').update({title,content}).eq("id",id);
   }
+  const handleColorChange=async(color:string,id:number)=>{
+    await supabase.from("notes-noink").update({color}).eq("id",id);
+  }
   
   const handleSignOut=()=>{
     window.location.replace("/login")
@@ -116,17 +115,18 @@ export default function Home() {
   const setCards=(noteArr:Array<noteType>)=>{
     const notediv=createRoot(document.getElementById("notediv")!)
     if(noteArr)notediv.render(noteArr.map((n)=>{
-      console.log(n.color);
       return <Card
         title={n.title}
         preview={
-          n.content.length>100?n.content.substring(0,100)+"...":
+          n.content.length>60?n.content.substring(0,60)+"...":
           n.content
         }
         id={n.id}
         key={n.id}
         deleteFunc={handleDeleteNote}
         color={n.color}
+        colorChoices={colors}
+        selectColorFunc={handleColorChange}
         />}
     ))
   }

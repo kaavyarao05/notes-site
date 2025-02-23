@@ -279,6 +279,7 @@
   display: inline-block;
   border: solid black 3px;
   color: #0a0a0a;
+  word-wrap: break-word;
   padding: 20px;
   height: var(--height);
   width: var(--width);
@@ -293,6 +294,7 @@
   --borderRad:5px;
   --height:190px;
   --width:190px;
+  padding: 15px;
 }
 
 .cardDiv > h2{
