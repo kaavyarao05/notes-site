@@ -99,7 +99,7 @@
   font-size: 13px;
   border-radius: 8px;
   width: 80%;
-  transition-duration: 300ms;
+  transition-duration: 100ms;
 }
 .container input:hover{
   border-color: #a82d9e;
@@ -279,7 +279,8 @@
   display: inline-block;
   border: solid black 3px;
   color: #0a0a0a;
-  word-wrap: break-word;
+  word-wrap:break-word;
+  word-break: break-all;
   padding: 20px;
   height: var(--height);
   width: var(--width);

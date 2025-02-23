@@ -112,15 +112,23 @@ export default function Home() {
     const enote=await getEmailNotes(email!)
     setCards(enote!);
   }
+  function getPreview(content:string){
+    let msg;
+    if(content.length>50){
+      msg=content.substring(0,47)+"...";
+    }
+    else{
+      msg=content;
+    }
+    console.log(msg);
+    return msg;
+  }
   const setCards=(noteArr:Array<noteType>)=>{
     const notediv=createRoot(document.getElementById("notediv")!)
     if(noteArr)notediv.render(noteArr.map((n)=>{
       return <Card
         title={n.title}
-        preview={
-          n.content.length>60?n.content.substring(0,60)+"...":
-          n.content
-        }
+        preview={getPreview(n.content)}
         id={n.id}
         key={n.id}
         deleteFunc={handleDeleteNote}
