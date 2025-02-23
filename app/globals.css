@@ -275,7 +275,8 @@
   --height:200px;
   --width: 200px;
 
-
+  position: relative;
+  display: inline-block;
   border: solid black 3px;
   color: #0a0a0a;
   padding: 20px;

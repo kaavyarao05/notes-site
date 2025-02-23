@@ -24,37 +24,16 @@ type noteType=
   created_at:string,
   title:string,
   content:string,
-  "user-email":string|null
+  "user-email":string|null,
+  color:string
 }
 
 type userData={
   email:string|null
 }
 
-var notesDat=[ //fetch instead
-    {
-      title:"Test Title",
-      preview:"Preview",
-      color:"#ffcdd6",
-      id:getId()
-    },
-    {
-      title:"Test Title",
-      preview:"Preview",
-      color:"#9fffdf",
-      id:getId()
-    },
-    {
-      title:"Test Title",
-      preview:"Preview",
-      color:"#a7e9ff",
-      id:getId()
-    }
-]
-
-function getRandomColour(){
-  return(colors[0])
-  //return(colors[Math.floor(Math.random() * colors.length)]);
+function getRandomcolor(){
+  return(colors[Math.floor(Math.random() * colors.length)]);
 }
 
 export default function Home() {
@@ -67,7 +46,8 @@ export default function Home() {
     const newnote={
       title:"New note",
       content:"Click to Edit",
-      "user-email":await getEmail()
+      "user-email":await getEmail(),
+      color:getRandomcolor()
     }
     await supabase.from('notes-noink').insert(newnote);
     if(userData?.email){
@@ -79,7 +59,21 @@ export default function Home() {
   const handleDeleteNote=async(id:number)=>{
     await supabase.from('notes-noink').delete().eq("id",id);
   }
-  
+  const handleUpdateNote=async(
+      {
+        title,
+        content,
+        id,
+        color
+      }:{
+        title:string,
+        content:string,
+        id:number,
+        color:string
+      }
+    )=>{
+    await supabase.from('notes-noink').update({title,content}).eq("id",id);
+  }
   
   const handleSignOut=()=>{
     window.location.replace("/login")
@@ -121,8 +115,9 @@ export default function Home() {
   }
   const setCards=(noteArr:Array<noteType>)=>{
     const notediv=createRoot(document.getElementById("notediv")!)
-    if(noteArr)notediv.render(noteArr.map((n)=>
-      <Card
+    if(noteArr)notediv.render(noteArr.map((n)=>{
+      console.log(n.color);
+      return <Card
         title={n.title}
         preview={
           n.content.length>100?n.content.substring(0,100)+"...":
@@ -131,8 +126,8 @@ export default function Home() {
         id={n.id}
         key={n.id}
         deleteFunc={handleDeleteNote}
-        color={colors[0]}
-        />
+        color={n.color}
+        />}
     ))
   }
   useEffect(()=>{

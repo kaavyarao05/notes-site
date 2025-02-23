@@ -3,8 +3,9 @@ import Image from 'next/image'
 import Trash from '@/public/trash.svg'
 
 const Card = ({title,preview,color,id,deleteFunc}) => {
+  console.log(color)
   return (
-    <div className={'relative cardDiv'} style={{backgroundColor:color}}>
+    <div className={'cardDiv'} style={{backgroundColor:color}}>
     <a href={"./notes/"+id}>
        <div>
             <h2>{title}</h2>
