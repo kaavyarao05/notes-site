@@ -38,8 +38,8 @@ export default function Canvas() {
   };
 
   return (
-    <div className="flex-1 border p-4 rounded-md shadow-md ">
-      
+    <div className="flex-1 p-4 rounded-md  ">
+      <h2 className="text-lg font-bold mb-2">Drawing Canvas</h2>
       <div className="mb-2 space-x-2 relative flex">
         <div className="relative flex items-center space-x-2">
           <Palette size={15} className="text-gray-700" />

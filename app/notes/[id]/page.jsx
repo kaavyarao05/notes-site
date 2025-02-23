@@ -13,11 +13,12 @@ import Link from "@tiptap/extension-link";
 import { Mark } from '@tiptap/core';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
-import {Undo,Redo,Trash2,Eraser,Palette,Clipboard,Download} from "lucide-react";
+import {Undo,Redo,Trash2,Eraser,Palette,Clipboard,Download,X} from "lucide-react";
 import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
 import Canvas from "@/app/1components/Canvas";
 import Navbar from "@/app/1components/Navbar";
+
 
 // Custom mark extension for word definitions
 const DefinitionMark = Mark.create({
@@ -483,15 +484,17 @@ export default function TextEditor() {
 
             <div
               ref={canvasRef}
-              className="fixed top-0 right-0 w-1/3 h-full bg-purple-100 shadow-lg p-4 transition-transform transform translate-x-full"
+              className="fixed top-0 right-0 w-1/3 h-full bg-purple-100 shadow-lg p-2 transition-transform transform translate-x-full flex object-fit"
             >
-              <button
-                onClick={toggleCanvas}
-                className="absolute top-2 right-2 bg-red-700 text-white px-3 py-1 rounded"
-              >
-                Close
-              </button>
-              <h2 className="text-lg font-bold mb-2">Canvas</h2>
+              <div className="mb-10 block">
+                <button
+                  onClick={toggleCanvas}
+                  className="absolute top-2 right-2 bg-red-700 text-white px-1 py-1 rounded"
+                >
+                  <X size={15}/>
+                </button>
+              </div>
+
               <Canvas />
             </div>
             
