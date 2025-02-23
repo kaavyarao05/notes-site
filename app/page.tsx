@@ -70,8 +70,16 @@ export default function Home() {
       "user-email":await getEmail()
     }
     await supabase.from('notes-noink').insert(newnote);
-    router.refresh()
+    if(userData?.email){
+      const newDbNote= await getEmailNotes(userData.email);
+      newDbNote?setNotes([...newDbNote]):null;
+      router.refresh();
+    };
   }
+  const handleDeleteNote=async(id:number)=>{
+    await supabase.from('notes-noink').delete().eq("id",id);
+  }
+  
   
   const handleSignOut=()=>{
     window.location.replace("/login")
@@ -83,28 +91,13 @@ export default function Home() {
     }
     return null;
   }
-  const setCards=(noteArr:Array<noteType>)=>{
-    const notediv=createRoot(document.getElementById("notediv")!)
-    if(noteArr)notediv.render(noteArr.map((n)=>
-      <Card title={n.title} preview={
-        n.content.length>100?n.content.substring(0,100)+"...":
-        n.content
-      } id={n.id} key={n.id} color={colors[0]}/>
-    ))
-  }
+
   const getEmail=async():Promise<string|null>=>{
     const {data,error}= await supabase.auth.getSession();
     const email=data.session?.user?.email?data.session.user.email:null;
     return email;
   }
-  const getUser=async()=>{
-    const {data,error}= await supabase.auth.getSession();
-    const userComponent=document.getElementById("username");
-    const email=await getEmail()!
-    userComponent!.innerHTML=email!;
-    const enote=await getEmailNotes(email!)
-    setCards(enote!);
-  }
+
   const setUserState=async()=>{
     const email=await getEmail();
     setUserData({
@@ -117,6 +110,30 @@ export default function Home() {
     const note:Array<noteType>|null=await getEmailNotes(email!);
     if (note){setNotes(note)}
     getUser();
+  }
+  const getUser=async()=>{
+    const {data,error}= await supabase.auth.getSession();
+    const userComponent=document.getElementById("username");
+    const email=await getEmail()!
+    userComponent!.innerHTML=email!;
+    const enote=await getEmailNotes(email!)
+    setCards(enote!);
+  }
+  const setCards=(noteArr:Array<noteType>)=>{
+    const notediv=createRoot(document.getElementById("notediv")!)
+    if(noteArr)notediv.render(noteArr.map((n)=>
+      <Card
+        title={n.title}
+        preview={
+          n.content.length>100?n.content.substring(0,100)+"...":
+          n.content
+        }
+        id={n.id}
+        key={n.id}
+        deleteFunc={handleDeleteNote}
+        color={colors[0]}
+        />
+    ))
   }
   useEffect(()=>{
     setUserState();
