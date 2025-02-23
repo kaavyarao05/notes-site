@@ -69,7 +69,7 @@ export default function Home() {
   }
   
   return (
-    <div>
+    <div className="bg-purple-100">
       <Navbar username="test" addnote={handleAddNote} random_color={getRandomColour}/>
       <div>
         {noteComponents}
