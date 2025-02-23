@@ -291,7 +291,7 @@
 }
 .cardDiv:hover{
   --shadowOffset:5px;
-  --margin:11px;
+  --margin:10px;
   --borderRad:5px;
   --height:190px;
   --width:190px;
