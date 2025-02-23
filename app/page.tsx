@@ -1,5 +1,6 @@
 "use client"
-import { useEffect } from 'react';
+
+import { useActionState, useEffect, useState } from 'react';
 import Card from '@/app/1components/Card';
 import { supabase } from './lib/supabase';
 import { useRouter } from 'next/navigation';
@@ -15,6 +16,19 @@ const colors=[
 let id=1
 function getId(){
   return(id++);
+}
+
+type noteType=
+{
+  id:number,
+  created_at:string,
+  title:string,
+  content:string,
+  "user-email":string|null
+}
+
+type userData={
+  email:string|null
 }
 
 var notesDat=[ //fetch instead
@@ -38,10 +52,6 @@ var notesDat=[ //fetch instead
     }
 ]
 
-async function getNotes(){
-    return await supabase.from('notes').select().neq('email',"");
-}
-
 function getRandomColour(){
   return(colors[0])
   //return(colors[Math.floor(Math.random() * colors.length)]);
@@ -49,52 +59,68 @@ function getRandomColour(){
 
 export default function Home() {
   const router=useRouter();
+  const [notes,setNotes]=useState<Array<noteType>>();
+  const [userData,setUserData]=useState<userData>();
+
+  console.log(notes);
   const handleAddNote=async()=>{
     const newnote={
       title:"New note",
       content:"Click to Edit",
+      "user-email":await getEmail()
     }
-    await supabase.from('notes').insert(newnote);
+    await supabase.from('notes-noink').insert(newnote);
+    router.refresh()
   }
   
   const handleSignOut=()=>{
     window.location.replace("/login")
   }
-  const getEmailNotes=async(email:string)=>{
+  const getEmailNotes=async(email:string):Promise<Array<noteType>|null>=>{
     const enotes=await supabase.from('notes-noink').select("*").eq("user-email",email);
     if (enotes.data){
       return enotes.data;
     }
     return null;
   }
-  const setCards=(noteArr:Array<
-    {
-      id:number,
-      created_at:string,
-      title:string,
-      content:string,
-      "user-email":string
-    }>)=>{
+  const setCards=(noteArr:Array<noteType>)=>{
     const notediv=createRoot(document.getElementById("notediv")!)
-    notediv.render(noteArr.map((n)=>
+    if(noteArr)notediv.render(noteArr.map((n)=>
       <Card title={n.title} preview={
         n.content.length>100?n.content.substring(0,100)+"...":
         n.content
       } id={n.id} key={n.id} color={colors[0]}/>
     ))
   }
+  const getEmail=async():Promise<string|null>=>{
+    const {data,error}= await supabase.auth.getSession();
+    const email=data.session?.user?.email?data.session.user.email:null;
+    return email;
+  }
   const getUser=async()=>{
     const {data,error}= await supabase.auth.getSession();
-    const userComponent=document.getElementById("username")
-    if(userComponent&&data.session?.user.email){
-      const email=data.session.user.email;
-      userComponent.innerHTML=email;
-      const enote=await getEmailNotes(email)
-      setCards(enote!);
-    }
-      
+    const userComponent=document.getElementById("username");
+    const email=await getEmail()!
+    userComponent!.innerHTML=email!;
+    const enote=await getEmailNotes(email!)
+    setCards(enote!);
   }
-  useEffect(()=>{getUser()},[])
+  const setUserState=async()=>{
+    const email=await getEmail();
+    setUserData({
+      email:email
+    })
+    setNoteState();
+  }
+  const setNoteState=async()=>{
+    const email=userData?.email;
+    const note:Array<noteType>|null=await getEmailNotes(email!);
+    if (note){setNotes(note)}
+    getUser();
+  }
+  useEffect(()=>{
+    setUserState();
+  },[])
  
   return (
     <div>
