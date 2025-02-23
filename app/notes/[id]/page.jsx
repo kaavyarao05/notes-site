@@ -16,7 +16,7 @@ import 'tippy.js/dist/tippy.css';
 import {Undo,Redo,Trash2,Eraser,Palette,Clipboard,Download} from "lucide-react";
 import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
-//import Canvas from "@/app/1components/Canvas";
+import Canvas from "@/app/1components/Canvas";
 import Navbar from "@/app/1components/Navbar";
 
 // Custom mark extension for word definitions
@@ -316,6 +316,13 @@ export default function TextEditor() {
     return <p>Loading editor....</p>;
   }
 
+  const toggleCanvas = () => {
+    if (canvasRef.current) {
+      canvasRef.current.classList.toggle("translate-x-full");
+    }
+  };
+
+
   return (
     <main className="pb-6 h-screen flex flex-col bg-purple-50">
       <Navbar />
@@ -329,7 +336,8 @@ export default function TextEditor() {
         {/* ✍️ Text Editor */}
         <div className="flex-1 flex flex-col border p-4 rounded-md shadow-md overflow-hidden bg-white">
 
-          <div className="mb-2 space-x-2">
+          <div>
+            <div className="mb-2 space-x-2">
             <button
               onClick={() => editor.chain().focus().toggleBold().run()}
               className={`px-2 py-1 border rounded font-bold ${editor.isActive('bold') ? 'bg-gray-200' : ''}`}
@@ -463,13 +471,31 @@ export default function TextEditor() {
             >
               📝 Add Definition
             </button>
-            <button className="px-2 py-1 border rounded">Canvas</button>
+            <button className="px-2 py-1 border rounded"
+              onClick={toggleCanvas}
+              >Canvas
+            </button>
             <button className="px-2 py-1 border rounded">Save</button>
+            </div>
+            <div className="flex-1 overflow-auto border rounded p-2">
+              <EditorContent editor={editor} className="prose max-w-none min-h-64" />
+            </div>
+
+            <div
+              ref={canvasRef}
+              className="fixed top-0 right-0 w-1/3 h-full bg-purple-100 shadow-lg p-4 transition-transform transform translate-x-full"
+            >
+              <button
+                onClick={toggleCanvas}
+                className="absolute top-2 right-2 bg-red-700 text-white px-3 py-1 rounded"
+              >
+                Close
+              </button>
+              <h2 className="text-lg font-bold mb-2">Canvas</h2>
+              <Canvas />
+            </div>
+            
           </div>
-          <div className="flex-1 overflow-auto border rounded p-2">
-            <EditorContent editor={editor} className="prose max-w-none min-h-64" />
-          </div>
-          
         </div>  
 
       {/* Definition Modal */}
