@@ -4,7 +4,7 @@ import { useState } from "react";
 import { supabase } from "../lib/supabase"
 import { useRouter } from "next/router";
 
-export default function LoginPage({username,password}) {
+export default function LoginPage() {
 
   const [data, setData]=useState({
     email:"",
@@ -12,7 +12,7 @@ export default function LoginPage({username,password}) {
   });
   function getUserDetails(){
     const email=document.getElementById("email").value;
-    const password=document.getElementById("password").value;
+    const password=document.getElementById("pass").value;
     return({email,password})
   }
   const login=async(e)=>{
