@@ -111,7 +111,9 @@ export default function TextEditor() {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        strike:false,
+      }),
       Underline,
       Color,
       TextStyle,
@@ -125,6 +127,7 @@ export default function TextEditor() {
       //}),
       Image,
     ],
+    immediatelyRender:false,
     content: "Start typing...",
     onUpdate: ({ editor }) => {
       // This ensures definitions are properly displayed after content changes
