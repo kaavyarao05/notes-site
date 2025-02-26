@@ -16,7 +16,7 @@ import 'tippy.js/dist/tippy.css';
 import {Undo,Redo,Trash2,Eraser,Palette,Clipboard,Download,X} from "lucide-react";
 import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
-import Canvas from "@/app/1components/Canvas";
+import Canvas from "@/app/1components/canvas";
 import Navbar from "@/app/1components/Navbar";
 
 
