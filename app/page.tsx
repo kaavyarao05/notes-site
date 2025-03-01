@@ -5,7 +5,7 @@ import Card from '@/app/1components/Card';
 import { supabase } from './lib/supabase';
 import { useRouter } from 'next/navigation';
 import {createRoot} from 'react-dom/client';
-
+import NavBar from '@/app/1components/Navbar';
 
 const colors=[
   "#ffcdd6",
@@ -37,7 +37,6 @@ export default function Home() {
   const [notes,setNotes]=useState<Array<noteType>>();
   const [userData,setUserData]=useState<userData>();
 
-  console.log(notes);
   const handleAddNote=async()=>{
     const newnote={
       title:"New note",
@@ -96,20 +95,19 @@ export default function Home() {
     setUserData({
       email:email
     })
-    setNoteState();
   }
   const setNoteState=async()=>{
     const email=userData?.email;
     const note:Array<noteType>|null=await getEmailNotes(email!);
     if (note){setNotes(note)}
-    getUser();
+  }
+  function sortFun(noteArray:Array<noteType>){
+
   }
   const getUser=async()=>{
     const {data,error}= await supabase.auth.getSession();
-    const userComponent=document.getElementById("username");
-    const email=await getEmail()!
-    userComponent!.innerHTML=email!;
-    const enote=await getEmailNotes(email!)
+    const enote=await getEmailNotes((await getEmail())!)
+    
     setCards(enote!);
   }
   function getPreview(content:string){
@@ -120,7 +118,6 @@ export default function Home() {
     else{
       msg=content;
     }
-    console.log(msg);
     return msg;
   }
   const setCards=(noteArr:Array<noteType>)=>{
@@ -138,17 +135,19 @@ export default function Home() {
         />}
     ))
   }
-  useEffect(()=>{
+  const setUp=async()=>{
     setUserState();
+    setNoteState();
+    getUser();
+  };
+  useEffect(()=>{
+    setUp();
   },[])
  
   return (
     <div>
-      <div>
-        <button onClick={handleSignOut} id="username"></button>
-        <button onClick={handleAddNote}>+</button>
-      </div>
-      <div id="notediv">
+      <NavBar username={userData?.email} addnote={handleAddNote}/>
+      <div id="notediv" className=''>
       </div>
     </div>
   );
